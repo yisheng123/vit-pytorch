@@ -105,7 +105,8 @@ class Transformer(nn.Module):
         self.layers = nn.ModuleList([])
         for _ in range(depth):
             self.layers.append(nn.ModuleList([
-                PreNorm(dim, Attention(dim, proj_kernel = proj_kernel, kv_proj_stride = kv_proj_stride, heads = heads, dim_head = dim_head, dropout = dropout)),
+                PreNorm(dim, Attention(dim, proj_kernel = proj_kernel, kv_proj_stride = kv_proj_stride, heads = heads, dim_head = dim_head,
+                                       dropout = dropout)),
                 PreNorm(dim, FeedForward(dim, mlp_mult, dropout = dropout))
             ]))
     def forward(self, x):
@@ -157,7 +158,8 @@ class CvT(nn.Module):
             layers.append(nn.Sequential(
                 nn.Conv2d(dim, config['emb_dim'], kernel_size = config['emb_kernel'], padding = (config['emb_kernel'] // 2), stride = config['emb_stride']),
                 LayerNorm(config['emb_dim']),
-                Transformer(dim = config['emb_dim'], proj_kernel = config['proj_kernel'], kv_proj_stride = config['kv_proj_stride'], depth = config['depth'], heads = config['heads'], mlp_mult = config['mlp_mult'], dropout = dropout)
+                Transformer(dim = config['emb_dim'], proj_kernel = config['proj_kernel'], kv_proj_stride = config['kv_proj_stride'], 
+                            depth = config['depth'], heads = config['heads'], mlp_mult = config['mlp_mult'], dropout = dropout)
             ))
 
             dim = config['emb_dim']
